@@ -58,7 +58,14 @@ end;
 procedure TfrmAnimateImage.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
+  begin
+    with TIniFile.Create(ChangeFileExt(ParamStr(0), '.ini')) do
+    begin
+      WriteInteger('Config', 'Index', FintIndex);
+      Free;
+    end;
     Close;
+  end;
 end;
 
 procedure TfrmAnimateImage.AnimateImage;
@@ -73,6 +80,10 @@ begin
     begin
       strImagePath := ReadString('Config', 'Directory', '');
       Free;
+    end;
+    if Trim(strImagePath) = '' then
+    begin
+      strImagePath := ExtractFilePath(ParamStr(0));
     end;
   end
   else
@@ -100,13 +111,21 @@ begin
     FlstFiles.Add(strFile);
   end;
 
+  with TIniFile.Create(ChangeFileExt(ParamStr(0), '.ini')) do
+  begin
+    FintIndex := ReadInteger('Config', 'Index', 0);
+    if FintIndex >= FlstFiles.Count then
+      FintIndex := 0;
+    Free;
+  end;
+
   tmrShow.Enabled := True;
 end;
 
 procedure TfrmAnimateImage.tmrShowTimer(Sender: TObject);
 begin
   Inc(FintIndex);
-  if FintIndex > FlstFiles.Count then
+  if FintIndex >= FlstFiles.Count then
     FintIndex := 0;
 
   FImgAnimateShow.Style := Random(170);

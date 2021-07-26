@@ -35,6 +35,7 @@ begin
   WindowState              := wsMaximized;
   FintIndex                := -1;
   FlstFiles                := TStringList.Create;
+  
   FImgAnimateShow          := TPicShow.Create(frmAnimateImage);
   FImgAnimateShow.Parent   := frmAnimateImage;
   FImgAnimateShow.Align    := alClient;
